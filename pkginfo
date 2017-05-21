@@ -1,0 +1,25 @@
+# Bash completion for pkginfo
+# by Tony Williams, honestpuck@gmail.com
+# version 0.2
+# 18/05/2017
+
+_pkginfo() {
+  local cur opts
+  COMPREPLY=()
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="--bom --check-signature --edit-pkg --expand --export-plist --file-info \
+    --file-info-plist --files --flatten --force --forget --groups --groups-pkgs \
+    --groups-plist --help --learn --only-dirs --only-files --packages --payload-files \
+    --pkg-groups --pkg-info --pkg-info-plist --pkgs-plist --pkgs= --regexp --repair 
+    --verbose --verify --volume" 
+
+  case "$cur" in
+    --*)
+      COMPREPLY=($(compgen -W "$opts"  "$cur"))
+      return
+      ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _pkginfo pkginfo

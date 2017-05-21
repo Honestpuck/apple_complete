@@ -1,0 +1,23 @@
+# Bash completion for pkgbuild
+# by Tony Williams, honestpuck@gmail.com
+# version 0.2
+# 18/05/2017
+
+_pkgbuild() {
+  local cur opts
+  COMPREPLY=()
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="--analyze --cert --component --component-plist --filter --identifier \
+    --install-location --keychain --nopayload --ownership --prior --quiet --root \
+    --scripts --sign --timestamp --timestamp=none --version" 
+
+  case "$cur" in
+    --*)
+      COMPREPLY=($(compgen -W "$opts"  "$cur"))
+      return
+      ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _pkgbuild pkgbuild

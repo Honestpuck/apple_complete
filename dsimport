@@ -1,0 +1,23 @@
+# Bash completion for dsimport
+# by Tony Williams, honestpuck@gmail.com
+# version 0.2
+# 18/05/2017
+
+_dsimport() {
+  local cur opts
+  COMPREPLY=()
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="--crypt --force --groupid --grouppreset --help --loglevel --outputfile --password --\
+    --recordformat --recordtype --remotehost --remotepassword --remoteusername --startid 
+    --template --username --userpreset --version" 
+
+  case "$cur" in
+    --*)
+      COMPREPLY=($(compgen -W "$opts" -- "$cur"))
+      return
+      ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _dsimport dsimport

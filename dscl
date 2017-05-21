@@ -1,0 +1,23 @@
+# Bash completion for dscl
+# by Tony Williams, honestpuck@gmail.com
+# version 0.2
+# 18/05/2017
+
+_dscl() {
+  local cur opts
+  COMPREPLY=()
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="-P -append -auth -authonly -cd -change -changei -create -createpl \
+    -createpli -delete -deletepl -deletepli -diff -f -list -merge -p -passwd \
+    -plist -popd -pushd -raw -read -readall -readpl -readpli -search -u" 
+
+  case "$cur" in
+    -*)
+      COMPREPLY=($(compgen -W "$opts" - "$cur"))
+      return
+      ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _dscl dscl

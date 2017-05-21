@@ -1,0 +1,24 @@
+# Bash completion for installer
+# by Tony Williams, honestpuck@gmail.com
+# version 0.2
+# 18/05/2017
+
+_installer() {
+  local cur opts
+  COMPREPLY=()
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="-allowUntrusted -applyChoiceChangesXML -config -dominfo -dumplog -file -help -lang \
+    -listiso -pkg -installer -plist -query -showChoiceChangesXML \
+    -showChoicesAfterApplyingChangesXML -showChoicesXML -store -target \
+    -verbose -verboseR -vers -volinfo" 
+
+  case "$cur" in
+    -*)
+      COMPREPLY=($(compgen -W "$opts" -- "$cur"))
+      return
+      ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _installer installer

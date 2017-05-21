@@ -7,4 +7,5 @@ They complete the options for each tool, the completion cuts in after `-` or `--
 If you have installed bash completion using `brew` then drop the files
 into `/usr/local/etc/bash_completion.d/` (or link them) and open a new Terminal window.
 
-Feedback, bug reports and comments would be greatly appreciated.
+Feedback, bug reports and comments would be greatly appreciated. If you want to
+nominate a CLI tool for me to add to this set, drop me a note or open an issue.

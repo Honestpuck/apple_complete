@@ -1,0 +1,279 @@
+# Bash completion for diskutil
+# by Tony Williams, honestpuck@gmail.com
+# version 0.3
+# 23/05/2017
+
+__du_comp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return 0
+    fi
+    i="$((++i))"
+  done
+  return 1
+}
+
+__du_comp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' '$'\t'$'\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __du_comp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+_du_list() {
+  __du_comp "-plist internal external physical virtual"
+  return
+}
+
+_du_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __du_comp "-all -plist"
+      return
+      ;;
+  esac
+}
+
+_du_activity() {
+  return
+}
+
+
+_du_listFilesystems() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __du_comp "-plist"
+      return
+      ;;
+  esac
+}
+
+_du_unmount() {
+  __du_comp "force"
+  return
+}
+
+_du_unmountDisk() {
+  __du_comp "force"
+  return
+}
+
+_du_eject() {
+  return
+}
+
+_du_mount() {
+  __du_comp "readOnly -mountPoint"
+  return
+}
+
+_du_mountDisk() {
+  return
+}
+
+_du_rename() {
+  return
+}
+
+_du_enableJournal() {
+  return
+}
+
+_du_disableJournal() {
+  __du_comp "force"
+  return
+}
+
+_du_moveJournal() {
+  __du_comp "external internal"
+  return
+}
+
+_du_enableOwnership() {
+  return
+}
+
+_du_disableOwnership() {
+  return
+}
+
+_du_verifyVolume() {
+  return
+}
+
+_du_repairVolume() {
+  return
+}
+
+_du_verifyDisk() {
+  return
+}
+
+_du_repairDisk() {
+  return
+}
+
+_du_eraseVolume() {
+  __du_comp "APFS ExFAT FAT16 FAT32 HFS+ hfsx jhfsx jhfs+ readOnly -mountPoint"
+  return
+}
+
+_du_eraseDisk() {
+  __du_comp "APFS ExFAT FAT16 FAT32 HFS+ hfsx jhfsx jhfs+ APM MBR GPT"
+  return
+}
+
+_du_reformat() {
+  return
+}
+
+_du_eraseOptical() {
+  __du_comp "quick"
+  return
+}
+
+_du_zeroDisk() {
+  __du_comp "force"
+  return
+}
+
+_du_randomDisk() {
+  return
+}
+
+_du_secureErase() {
+  __du_comp "freespace"
+  return
+}
+
+_du_partitionDisk() {
+  __du_comp "APFS ExFAT FAT16 FAT32 HFS+ hfsx jhfsx jhfs+ APM MBR GPT"
+  return
+}
+
+_du_resizeVolume() {
+  __du_comp "limits mapsize R APFS ExFAT FAT16 FAT32 HFS+ hfsx jhfsx jhfs+ "
+  return
+}
+
+_du_splitPartition() {
+  __du_comp "APFS ExFAT FAT16 FAT32 HFS+ hfsx jhfsx jhfs+ "
+  return
+}
+
+_du_mergePartitions() {
+  __du_comp "force"
+  return
+}
+
+_du_appleRAID() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+    __du_comp "-plist"
+    return
+    ;;
+  esac
+  __du_comp "create mirror stripe concat delete repairMirror add remove enable update"
+
+}
+
+_du_APFS() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __du_comp "-plist  -fileencryption -effaceable -reserve -quota -role -nomount \
+      -mountpoint"
+      return
+      ;;
+  esac
+  __du_comp "list create createContainer deleteContainer resizeContainer addVolume \
+    addVolume deleteVolume eraseVolume changeVolumeRole"
+
+}
+
+_du_coreStorage() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __du_comp "-plist -stdinpassphrase -passphrase -recoverykeychain -nomount \
+        -oldpassphrase -newpassphrase "
+      return
+      ;;
+  esac
+  __du_comp "list info convert revert createLVG deleteLVG renameLVG createLV \
+    deleteLV encryptLV decryptLV unlockLV changeVolumePassphrase resizeLV \
+    resizeDisk resizePV resizeStack"
+}
+
+_diskutil() {
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
+  then
+    opts="list info activity listFilesystems unmount unmountDisk eject mount mountDisk \
+      rename enableJournal disableJournal moveJournal enableOwnership disableOwnership \
+      verifyVolume repairVolume verifyDisk repairDisk eraseVolume eraseDisk reformat \
+      eraseOptical zeroDisk randomDisk secureErase partitionDisk resizeVolume \
+      splitPartition mergePartitions APFS AppleRaid coreStorage "
+    COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+    return 0
+  fi
+
+  cmd="${COMP_WORDS[1]}"
+    
+  case "$cmd" in
+	list) _du_list ;;
+	info) _du_info ;;
+	activity) _du_activity ;;
+	listFilesystems) _du_listFilesystems ;;
+	unmount) _du_unmount ;;
+	unmountDisk) _du_unmountDisk ;;
+	eject) _du_eject ;;
+	mount) _du_mount ;;
+	mountDisk) _du_mountDisk ;;
+	rename) _du_rename ;;
+	enableJournal) _du_enableJournal ;;
+	disableJournal) _du_disableJournal ;;
+	moveJournal) _du_moveJournal ;;
+	enableOwnership) _du_enableOwnership ;;
+	disableOwnership) _du_disableOwnership ;;
+	verifyVolume) _du_verifyVolume ;;
+	repairVolume) _du_repairVolume ;;
+	verifyDisk) _du_verifyDisk ;;
+	repairDisk) _du_repairDisk ;;
+	eraseVolume) _du_eraseVolume ;;
+	eraseDisk) _du_eraseDisk ;;
+	reformat) _du_reformat ;;
+	eraseOptical) _du_eraseOptical ;;
+	zeroDisk) _du_zeroDisk ;;
+	randomDisk) _du_randomDisk ;;
+	secureErase) _du_secureErase ;;
+	partitionDisk) _du_partitionDisk ;;
+	resizeVolume) _du_resizeVolume ;;
+	splitPartition) _du_splitPartition ;;
+	mergePartitions) _du_mergePartitions ;;
+	APFS) _du_APFS ;;
+	AppleRaid) _du_AppleRaid ;;
+	coreStorage) _du_coreStorage ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _diskutil diskutil

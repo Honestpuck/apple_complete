@@ -1,0 +1,123 @@
+# Bash completion for bless
+# by Tony Williams, honestpuck@gmail.com
+# version 0.1
+# 22/05/2017
+
+__blesscomp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return 0
+    fi
+    i="$((++i))"
+  done
+  return 1
+}
+
+__blesscomp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' '$'\t'$'\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __blesscomp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+_bless_help() {
+  return
+}
+
+
+_bless_folder() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __jamfcomp "--file --bootinfo --bootefi --label --labelfile --setBoot --openfolder \
+        --nextonly --shortform --legacy --legacydrivehint --options --quiet --verbose"
+      return
+      ;;
+  esac
+}
+
+_bless_mount() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __jamfcomp "--file --setBoot --nextonly --shortform --legacy --legacydrivehint \
+        --options --quiet --verbose"
+      return
+      ;;
+  esac
+}
+
+_bless_device() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __jamfcomp "--label --labelfile --startupfile --setBoot --nextonly --shortform \
+    	--legacy --legacydrivehint --options --quiet --verbose"
+      return
+      ;;
+  esac
+}
+
+_bless_netboot() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __jamfcomp "--netboot --server --nextonly --options --quiet --verbose"
+      return
+      ;;
+  esac
+}
+
+_bless_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __jamfcomp "--getBoot --plist --quiet --verbose --version"
+      return
+      ;;
+  esac
+}
+
+_bless_unbless() {
+  return
+}
+
+_bless() {
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
+  then
+    opts="--help --folder --mount --device --netboot --info --unbless"
+    COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+    return 0
+  fi
+
+  cmd="${COMP_WORDS[1]}"
+    
+  case "$cmd" in
+	--help) _bless_help ;;
+	--folder) _bless_folder ;;
+	--mount) _bless_mount ;;
+	--device) _bless_device ;;
+	--netboot) _bless_netboot ;;
+	--info) _bless_info ;;
+	--unbless) _bless_unbless ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _bless bless

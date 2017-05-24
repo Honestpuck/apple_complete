@@ -1,0 +1,368 @@
+# Bash completion for hdiutil
+# by Tony Williams, honestpuck@gmail.com
+# version 0.2
+# 18/05/2017
+
+__hdi_comp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return 0
+    fi
+    i="$((++i))"
+  done
+  return 1
+}
+
+__hdi_comp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' '$'\t'$'\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __hdi_comp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+_hdi_attach() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug −encryption −stdinpass −recover −imagekey \
+        −shadow −puppetstrings −plist -readonly -readwrite -nokernel -kernel \
+        -notremovable -mount -nomount -mountroot -mountrandom -mountpoint \
+        -nobrowse -owners -drivekey -section -verify -noverify \
+        -ignorebadchecksums -noignorebadchecksums -idme -noidme -idmereveal -noidmereveal \
+        -idmetrash -noidmetrash -auotoopen -noautoopen -autoopenro -noautoopenro \
+        -autoopenrw -noautoopenrw -autofsck -noautofsck"
+      return
+      ;;
+  esac
+}
+
+_hdi_burn() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -shadow -srcimagekey -encryption -pupptetstrings \
+        -stdinpass -device -test -anydevice -eject -noeject -verifyburn -noverifyburn \
+        -addpmap -noaddpmap -skipfinalfree -noskipfinalfree -optimizeimage \
+        -nooptimizeimage -forceclose -noforceclose -nounderrun -synethesize 
+        -nosynethesize -speed -sizequery -erase -fullerase -list"
+      return
+      ;;
+  esac
+}
+
+_hdi_checksum() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -shadow -encryption -stdinpass -srcimagekey \
+      -pupptetstrings -plist -type"
+      return
+      ;;
+  esac
+}
+
+_hdi_chpass() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -recover -srcimagekey -oldstdinpass -newstdinpass"
+      return
+      ;;
+  esac
+}
+
+_hdi_compact() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -encryption -stdinpass -srcimagekey -shadow \
+      -pupptetstrings -plist -batteryallowed -sleepallowed"
+      return
+      ;;
+  esac
+}
+
+_hdi_convert() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -imagekey -encryption -stdinpass -certificate \
+      -srcimagekey -tgtimagekey -shadow -pupptetstrings -plist"
+      return
+      ;;
+  esac
+}
+
+_hdi_create() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -size -sectors -megabytes -srcfolder -srcdevice \
+      -encryption -stdinpass -certificate -pubkey -imagekey -tgtimagekey -pupptetstrings \
+      -plist -align -type -fs -volname -uid -gid -mode -autostretch -noautostretch \
+      -stretch -fsargs -layout -library -partitiontype -oc -attach -format \
+      -segmentSize -crossdev -nocrossdev -scrub -noscrub -anywoners -noanyowners \
+      -skipunreadable -atomic -noatimic -copyuid"
+      return
+      ;;
+  esac
+}
+
+_hdi_detach() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -force"
+      return
+      ;;
+  esac
+}
+
+_hdi_erasekeys() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -plist ****"
+      return
+      ;;
+  esac
+}
+
+_hdi_flatten() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -srcimagekey -encryption -stdinpass -noxml \
+        -norsrcfork"
+      return
+      ;;
+  esac
+}
+
+_hdi_fsid() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -srcimagekey -encryption -stdinpass -shadow"
+      return
+      ;;
+  esac
+}
+
+_hdi_help() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug ****"
+      return
+      ;;
+  esac
+}
+
+_hdi_imageinfo() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -format -checksum -encryption -stdinpass \
+        -srcimagekey -shadow -plist"
+      return
+      ;;
+  esac
+}
+
+_hdi_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug ****"
+      return
+      ;;
+  esac
+}
+
+_hdi_isencrypted() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-plist"
+      return
+      ;;
+  esac
+}
+
+_hdi_makehybrid() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -hfs -iso -joliet -udf -hfs-blessed-directory \
+      -hfs-openfolder -hfs-startupfile-size -abstract-file -bibliography-file \
+      -copyright-file -application -preparer -publisher -system-id -keep-mac-specific \
+      -eltorito-boot -hard-disk-boot -no-emul-boot -no-boot -boot-load-seg -boot-load-size \
+      -eltorito-platform -eltorito-specification -udf-version -default-volume-name \
+      -iso-volume-name -joliet-volume-name -udf-volume-name -hide-all -hide-hfs -hide-iso \
+      -hide-joliet -hide-udf -only-udf -only-iso -only-joliet -print-size -plistin"
+      return
+      ;;
+  esac
+}
+
+_hdi_mountvol() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -plist"
+      return
+      ;;
+  esac
+}
+
+_hdi_plugins() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-plist"
+      return
+      ;;
+  esac
+}
+
+_hdi_pmap() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -encryption -stdinpass -srcimagekey -shadow \
+      -simple -standard -complete -diagnostic -endoffsets -nofreespace -shims -uuids"
+      return
+      ;;
+  esac
+}
+
+_hdi_resize() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -encryption -stdinpass -srcimagekey -shadow \
+      -plist -size -sectors -imageonly -partitiononly -partitionNumber -growonly \
+      -shrinkonly -nofinalgap -limits"
+      return
+      ;;
+  esac
+}
+
+_hdi_segment() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -encryption -stdinpass -srcimagekey \
+        -tgtimagekey -pupptetstrings -plist -segmentCount -segmentSize \
+        -firstSegmentSize -restricted -ov"
+      return
+      ;;
+  esac
+}
+
+_hdi_udifderez() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -xml -rez -encryption -stdinpass -srcimagekey"
+      return
+      ;;
+  esac
+}
+
+_hdi_udifrez() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -xml -rsrcfork -replaceall"
+      return
+      ;;
+  esac
+}
+
+_hdi_unflatten() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -encryption -stdinpass -srcimagekey"
+      return
+      ;;
+  esac
+}
+
+_hdi_unmount() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug -force"
+      return
+      ;;
+  esac
+}
+
+_hdi_verify() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    -*)
+      __hdi_comp "-quiet -verbose -debug −encryption −stdinpass −srcimagekey \
+        −puppetstrings −plist."
+      return
+      ;;
+  esac
+}
+
+
+_hdiutil() {
+  local cur opts
+  COMPREPLY=()
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="attach burn checksum chpass compact convert create detach erasekeys flatten \
+    help imageinfo info internet-enable isencrypted makehybrid mountvol plugins pmap \
+    resize segment udifderez udifrez unflatten unmount verify" 
+
+  case "$cur" in
+	attach) _hdi_attach ;;
+	burn) _hdi_burn ;;
+	checksum) _hdi_checksum ;;
+	chpass) _hdi_chpass ;;
+	compact) _hdi_compact ;;
+	convert) _hdi_convert ;;
+	create) _hdi_create ;;
+	detach) _hdi_detach ;;
+	erasekeys) _hdi_erasekeys ;;
+	flatten) _hdi_flatten ;;
+	fsid) _hdi_fsid ;;
+	help) _hdi_help ;;
+	imageinfo) _hdi_imageinfo ;;
+	info) _hdi_info ;;
+	isencrypted) _hdi_isencrypted ;;
+	makehybrid) _hdi_makehybrid ;;
+	mountvol) _hdi_mountvol ;;
+	plugins) _hdi_plugins ;;
+	pmap) _hdi_pmap ;;
+	resize) _hdi_resize ;;
+	segment) _hdi_segment ;;
+	udifderez) _hdi_udifderez ;;
+	udifrez) _hdi_udifrez ;;
+	unflatten) _hdi_unflatten ;;
+	unmount) _hdi_unmount ;;
+	verify) _hdi_verify ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _hdiutil hdiutil
+

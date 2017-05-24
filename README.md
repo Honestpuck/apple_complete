@@ -28,4 +28,9 @@ argument it will also complete the formats. No work has been done to
 create more specific completion than at the verb level or to make sure
 you have options and arguments in the right order.
 
- 
+#### hdiutil
+
+For `hdiutil` it first completes on the verbs and then completes on the
+options for each verb once you enter the `-`. No work has been done to
+create more specific completion than at the verb level or to make sure
+you have options and arguments in the right order.

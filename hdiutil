@@ -328,13 +328,21 @@ _hdi_verify() {
 _hdiutil() {
   local cur opts
   COMPREPLY=()
-
   cur="${COMP_WORDS[COMP_CWORD]}"
-  opts="attach burn checksum chpass compact convert create detach erasekeys flatten \
-    help imageinfo info internet-enable isencrypted makehybrid mountvol plugins pmap \
-    resize segment udifderez udifrez unflatten unmount verify" 
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  case "$cur" in
+  if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
+  then
+    opts="attach burn checksum chpass compact convert create detach erasekeys flatten \
+	  help imageinfo info internet-enable isencrypted makehybrid mountvol plugins pmap \
+	  resize segment udifderez udifrez unflatten unmount verify" 
+    COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+    return 0
+  fi
+
+  cmd="${COMP_WORDS[1]}"
+
+  case "$cmd" in
 	attach) _hdi_attach ;;
 	burn) _hdi_burn ;;
 	checksum) _hdi_checksum ;;

@@ -26,7 +26,8 @@ the verb. For options prefaced with `-` it will only complete after you
 enter the `-`. For verbs such as `eraseDisk` where you specify a format
 argument it will also complete the formats. No work has been done to
 create more specific completion than at the verb level or to make sure
-you have options and arguments in the right order.
+you have options and arguments in the right order. Quite a lot of the
+verbs take no options.
 
 #### hdiutil
 

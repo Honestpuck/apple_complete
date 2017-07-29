@@ -102,7 +102,11 @@ _bless() {
 
   if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
   then
-    opts="--help --folder --mount --device --netboot --info --unbless"
+    opts="list info activity listFilesystems unmount unmountDisk eject mount mountDisk \
+      rename enableJournal disableJournal moveJournal enableOwnership disableOwnership \
+      verifyVolume repairVolume verifyDisk repairDisk eraseVolume eraseDisk reformat \
+      eraseOptical zeroDisk randomDisk secureErase partitionDisk resizeVolume \
+      splitPartition mergePartitions APFS AppleRaid coreStorage "
     COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
     return 0
   fi
@@ -110,7 +114,7 @@ _bless() {
   cmd="${COMP_WORDS[1]}"
     
   case "$cmd" in
-	--help) _bless_help ;;
+	help) _bless_help ;;
 	--folder) _bless_folder ;;
 	--mount) _bless_mount ;;
 	--device) _bless_device ;;

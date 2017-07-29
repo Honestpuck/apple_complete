@@ -1,0 +1,292 @@
+# Bash completion for launchctl
+# by Tony Williams, honestpuck@gmail.com
+# version 0.1
+# 17/07/2017
+
+__launchcomp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return 0
+    fi
+    i="$((++i))"
+  done
+  return 1
+}
+
+__launchcomp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' '$'\t'$'\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __launchcomp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+# one func for each command
+
+_launch_attach() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_blame() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_bootstrap() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_config() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_debug() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_enable() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_error() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_examine() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_hostinfo() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_kickstart() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_kill() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_plist() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_print() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_print-cache() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_print-disabled() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_procinfo() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_reboot() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_resolveport() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_uncache() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_variant() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+_launch_version() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __launchcomp "****"
+      return
+      ;;
+  esac
+}
+
+
+
+
+_launchctl() {
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
+  then
+    opts="attach blame bootstrap config debug enable error examine hostinfo kickstart \
+      kill plist print print-cache print-disabled procinfo reboot resolveport uncache 
+      variant version "
+    COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+    return 0
+  fi
+
+  cmd="${COMP_WORDS[1]}"
+    
+  case "$cmd" in
+	attach) _launch_attach ;; 
+	blame) _launch_blame ;; 
+	bootstrap) _launch_bootstrap ;; 
+	config) _launch_config ;; 
+	debug) _launch_debug ;; 
+	enable) _launch_enable ;; 
+	error) _launch_error ;; 
+	examine) _launch_examine ;; 
+	hostinfo) _launch_hostinfo ;; 
+	kickstart) _launch_kickstart ;; 
+	kill) _launch_kill ;; 
+	plist) _launch_plist ;; 
+	print) _launch_print ;; 
+	print-cache) _launch_print-cache ;; 
+	print-disabled) _launch_print-disabled ;; 
+	procinfo) _launch_procinfo ;; 
+	reboot) _launch_reboot ;; 
+	resolveport) _launch_resolveport ;; 
+	uncache) _launch_uncache ;; 
+	variant) _launch_variant ;; 
+	version) _launch_version ;; 
+  esac
+}
+
+complete -o bashdefault -o default -F _launchctl launchctl

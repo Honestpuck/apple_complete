@@ -1,0 +1,117 @@
+# Bash completion for log
+# by Tony Williams, honestpuck@gmail.com
+# version 0.1
+# 29/07/2017
+
+__logcomp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return 0
+    fi
+    i="$((++i))"
+  done
+  return 1
+}
+
+__logcomp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' '$'\t'$'\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __logcomp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+_log_help() {
+  return
+}
+
+_log_collect() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __logcomp "--output --start --last --size"
+      return
+      ;;
+  esac
+}
+
+_log_config() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __logcomp "--reset --status --subsystem --category --process --mode"
+      return
+      ;;
+  esac
+}
+
+_log_erase() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __logcomp "--all --ttl"
+      return
+      ;;
+  esac
+}
+
+_log_show() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __logcomp "--archive --file --predicate --source --style --start --end --last\
+        --timezone --info --debug"
+      return
+      ;;
+  esac
+}
+
+_log_stream() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __logcomp "--level --predicate --parent --process --style --source --timeout\
+        --type "
+      return
+      ;;
+  esac
+}
+
+
+_log() {
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
+  then
+    opts="help version restore restoreexact server imagescan info"
+    COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+    return 0
+  fi
+
+  cmd="${COMP_WORDS[1]}"
+    
+  case "$cmd" in
+	help) _log_help ;;
+	collect) _log_collect ;;
+	config) _log_config ;;
+	erase) _log_erase ;;
+	show) _log_show ;;
+	stream) _log_stream ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _log log

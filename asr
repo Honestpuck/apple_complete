@@ -1,0 +1,123 @@
+# Bash completion for asr
+# by Tony Williams, honestpuck@gmail.com
+# version 0.1
+# 29/06/2017
+
+__asrcomp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return 0
+    fi
+    i="$((++i))"
+  done
+  return 1
+}
+
+__asrcomp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' '$'\t'$'\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __asrcomp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+_asr_help() {
+  return
+}
+
+_asr_version() {
+  return
+}
+
+
+_asr_restore() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __asrcomp "--source --target --file --erase --format --noprompt --timeout \
+        --puppetstrings --noverify −-allowfragmentedcatalog −-corestorageconvert --SHA256"
+      return
+      ;;
+  esac
+}
+
+_asr_restoreexact() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __asrcomp "--source --target --file --erase --format --noprompt --timeout \
+        --puppetstrings --noverify −-allowfragmentedcatalog −-corestorageconvert --SHA256"
+      return
+      ;;
+  esac
+}
+
+_asr_server() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __asrcomp "--source --interface --config"
+      return
+      ;;
+  esac
+}
+
+_asr_imagescan() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __asrcomp "--nostream −-allowfragmentedcatalog"
+      return
+      ;;
+  esac
+}
+
+_asr_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __asrcomp "--source --plist"
+      return
+      ;;
+  esac
+}
+
+
+_asr() {
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
+  then
+    opts="help version restore restoreexact server imagescan info"
+    COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+    return 0
+  fi
+
+  cmd="${COMP_WORDS[1]}"
+    
+  case "$cmd" in
+	help) _asr_help ;;
+	version) _asr_version ;;
+	restore) _asr_restore ;;
+	restoreexact) _asr_restoreexact ;;
+	server) _asr_server ;;
+	info) _asr_info ;;
+	imagescan) _asr_imagescan ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _asr asr

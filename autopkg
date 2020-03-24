@@ -1,0 +1,256 @@
+# Bash completion for autopkg
+# by Tony Williams, honestpuck@gmail.com
+# version 0.5
+# 14/05/2017
+
+__autopkgcomp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return 0
+    fi
+    i="$((++i))"
+  done
+  return 1
+}
+
+__autopkgcomp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' '$'\t'$'\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __autopkgcomp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+__autopkgcomp_recipes() {
+  # build a list of recipes
+  local recipes="$(autopkg list-recipes)"
+  COMPREPLY=($(compgen -W "$recipes" -- "$cur"))
+}
+
+__autopkgcomp_repos() {
+  # build a list of the repos - returns the URL form
+  local repolist="$(for r in `autopkg repo-list`; do expr $r : '.*(\(.*\))'; done)"
+  local repos
+  while read -r line; do
+  	# remove empty lines
+  	if [[ -n $line ]]; then
+  		repos="$repos $line"
+  	fi
+  	# when the repo url starts with github.com, also add the path
+  	if [[ $line == "https://github.com/"* ]]; then
+  		repos="$repos ${line:19}"
+  	fi
+  	# when the repo url starts with github.com/autopkg, then add just the name
+  	if [[ $line == "https://github.com/autopkg/"* ]]; then
+  		repos="$repos ${line:27}"
+  	fi
+  done <<< "$repolist"
+
+  COMPREPLY=($(compgen -W "$repos" -- "$cur"))
+}
+
+# one function for each autopkg command
+# some do nothing, just included for neatness and possible use in an expansion
+
+_autopkg_audit() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --search-dir= --override-dir= --recipe-list= --plist"
+      return
+      ;;
+  esac
+  __autopkgcomp_recipes 
+}
+
+_autopkg_help() {
+	return
+}
+
+_autopkg_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --directory= --override-dir="
+      return
+      ;;
+  esac
+  __autopkgcomp_recipes
+}
+
+_autopkg_install() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --pre --post --ignoreparent-trust-verification-errors
+        --check --report-plist= --verbose --search-dir=  --override-dir="
+      return
+      ;;
+  esac
+  # we can only install recipes ending in `.install`
+  local installable="$(autopkg list-recipes | grep .install)"
+  COMPREPLY=($(compgen -W "$installable" -- "$cur"))
+}
+
+_autopkg_list_processors() {
+	return
+}
+
+_autopkg_list_recipes() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --with-identifiers --with-path --plist --show-all
+        --search-dir=  --override-dir="
+      return
+      ;;
+  esac
+}
+
+_autopkg_make_override() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --force --search-dir=  --override-dir= --name="
+      return
+      ;;
+  esac
+  __autopkgcomp_recipes
+}
+
+_autopkg_new_recipe() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --parent-identifier= --identifier="
+      return
+      ;;
+  esac
+}
+
+
+_autopkg_processor_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --recipe= --search-dir=  --override-dir= --name="
+      return
+      ;;
+  esac
+}
+
+_autopkg_repo-add() {
+  return
+}
+
+_autopkg_repo-delete() {
+  __autopkgcomp_repos
+}
+
+_autopkg_repo-list() {
+  return
+}
+
+_autopkg_repo-add() {
+  return
+}
+
+_autopkg_repo-update() {
+  __autopkgcomp_repos
+}
+
+_autopkg_run() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --pre= --post= --ignoreparent-trust-verification-errors
+        --check  --recipe-list= --pkg= --report-plist= --verbose 
+        --search-dir=  --override-dir= --quiet"
+      return
+      ;;
+  esac
+  __autopkgcomp_recipes
+}
+
+_autopkg_search() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --recipe --search-dir  --override-dir --name"
+      return
+      ;;
+  esac
+}
+
+_autopkg_update_trust_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --search-dir  --override-dir"
+      return
+      ;;
+  esac
+}
+
+_autopkg_verify_trust_info() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "$cur" in
+    --*)
+      __autopkgcomp "--help --recipe-list --verbose --search-dir  --override-dir"
+      return
+      ;;
+  esac
+}
+
+_autopkg() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+	if [[ "$COMP_CWORD" = "1" ]] # we are matching the command
+	then
+	  opts="audit help info install list-processors list-recipes \
+		make-override new-recipe processor-info repo-add repo-delete repo-list \
+		repo-update run search update-trust-info verify-trust-info version"
+	  COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+	  return 0
+	fi
+
+    cmd="${COMP_WORDS[1]}"
+    
+    case "$cmd" in
+      audit) _autopkg_audit ;;
+      help) _autopkg_help ;; 
+      info) _autopkg_info ;; 
+      list-processors) _autopkg_list_processors ;; 
+      list-recipes) _autopkg_list_recipes ;; 
+      make-override) _autopkg_make_override ;; 
+      new-recipe) _new_recipe ;;
+      processor-info) _autopkg_processor_info ;; 
+      repo-add) _autopkg_repo-add ;; 
+      repo-delete) _autopkg_repo-delete ;; 
+      repo-list) _autopkg_repo-list ;; 
+      repo-update) _autopkg_repo-update ;; 
+      run) _autopkg_run ;; 
+      search) _autopkg_search ;; 
+      update-trust-info) _autopkg_update_trust_info ;; 
+      verify-trust-info) _autopkg_verify_trust_info ;; 
+      version) _autopkg_version ;;
+      install) _autopkg_install ;; 
+      *)
+	esac               
+}
+
+complete -o bashdefault -o default -F _autopkg autopkg

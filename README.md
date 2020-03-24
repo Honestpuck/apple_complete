@@ -12,6 +12,18 @@ Feedback, bug reports and comments would be greatly appreciated. If you
 want to nominate a CLI tool for me to add to this set, drop me a note or
 open an issue.
 
+### For zsh
+
+You can use bash completions with `zsh` just close to the top of `.zshrc` put :
+```
+# bash compatible completion
+autoload bashcompinit
+bashcompinit
+```
+
+and the line `source <path to directory of completions>/*` right at the end, e.g. 
+`source ~/bin/bash_completion/*`.
+
 ### Notes
 
 #### bless

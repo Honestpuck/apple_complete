@@ -41,7 +41,7 @@ _bless_folder() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   case "$cur" in
     --*)
-      __jamfcomp "--file --bootinfo --bootefi --label --labelfile --setBoot --openfolder \
+      __blesscomp "--file --bootinfo --bootefi --label --labelfile --setBoot --openfolder \
         --nextonly --shortform --legacy --legacydrivehint --options --quiet --verbose"
       return
       ;;
@@ -52,7 +52,7 @@ _bless_mount() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   case "$cur" in
     --*)
-      __jamfcomp "--file --setBoot --nextonly --shortform --legacy --legacydrivehint \
+      __blesscomp "--file --setBoot --nextonly --shortform --legacy --legacydrivehint \
         --options --quiet --verbose"
       return
       ;;
@@ -63,7 +63,7 @@ _bless_device() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   case "$cur" in
     --*)
-      __jamfcomp "--label --labelfile --startupfile --setBoot --nextonly --shortform \
+      __blesscomp "--label --labelfile --startupfile --setBoot --nextonly --shortform \
     	--legacy --legacydrivehint --options --quiet --verbose"
       return
       ;;
@@ -74,7 +74,7 @@ _bless_netboot() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   case "$cur" in
     --*)
-      __jamfcomp "--netboot --server --nextonly --options --quiet --verbose"
+      __blesscomp "--netboot --server --nextonly --options --quiet --verbose"
       return
       ;;
   esac
@@ -84,7 +84,7 @@ _bless_info() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   case "$cur" in
     --*)
-      __jamfcomp "--getBoot --plist --quiet --verbose --version"
+      __blesscomp "--getBoot --plist --quiet --verbose --version"
       return
       ;;
   esac

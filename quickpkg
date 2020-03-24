@@ -1,0 +1,23 @@
+# bash completion for quickpkg
+#
+# Tony Williams, honestpuck@gmail.completion
+# v1.0 2020-03-24
+
+_quickpkg() {
+  local cur opts
+  COMPREPLY=()
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="-ownership -output -clean -no-clean -relocatable -no-relocatable \
+    -sign -keychain -cert -verbosity -version"
+
+  case "$cur" in
+    -*)
+      COMPREPLY=($(compgen -W "$opts" - "$cur"))
+      return
+      ;;
+  esac
+}
+
+complete -o bashdefault -o default -F _quickpkg quickpkg
+

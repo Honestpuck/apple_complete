@@ -35,3 +35,10 @@ For `hdiutil` it first completes on the verbs and then completes on the
 options for each verb once you enter the `-`. No work has been done to
 create more specific completion than at the verb level or to make sure
 you have options and arguments in the right order.
+
+#### quickpkg
+
+It will complete all the options. If you enter the option `--ownership`
+it will then complete on the the three possibilities. If you enter the
+option `--keychain` then it will complete on all the keychains the 
+system knows about.

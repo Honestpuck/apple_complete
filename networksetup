@@ -1,0 +1,67 @@
+# bash programmable completion for _networksetup
+# Tony Willianms (honestpuck@gmail.com)
+# v1.0 2020-03-25
+#
+
+_networksetup() {
+    local cur prev opts opts_ns
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="-listnetworkserviceorder -listallnetworkservices -listallhardwareports \
+        -detectnewhardware -getmacaddress -getcomputername -setcomputername \
+        -getinfo -setmanual -setdhcp -setbootp -setmanualwithdhcprouter \
+        -getadditionalroutes -setadditionalroutes -setv4off -setv6off \
+        -setv6automatic -setv6LinkLocal -setv6manual -getv6additionalroutes \
+        -setv6additionalroutes  -getdnsservers -setdnsservers  -getsearchdomains \
+        -setsearchdomains -create6to4service -set6to4automatic -set6to4manual \
+        -getftpproxy -setftpproxy -setftpproxystate -getwebproxy -setwebproxy \
+        -setwebproxystate -getsecurewebproxy -setsecurewebproxy \
+        -setsecurewebproxystate -getstreamingproxy -setstreamingproxy \
+        -setstreamingproxystate -getgopherproxy -setgopherproxy \
+        -setgopherproxystate -getsocksfirewallproxy -setsocksfirewallproxy \
+        -setsocksfirewallproxystate -getproxybypassdomains -setproxybypassdomains \
+        -getproxyautodiscovery -setproxyautodiscovery -getpassiveftp \
+        -setpassiveftp -getairportnetwork -setairportnetwork -getairportpower \
+        -setairportpower -listpreferredwirelessnetworks \
+        -addpreferredwirelessnetworkatindex -removepreferredwirelessnetwork \
+        -removeallpreferredwirelessnetworks -getnetworkserviceenabled \
+        -setnetworkserviceenabled -createnetworkservice -renamenetworkservice \
+        -duplicatenetworkservice -removenetworkservice -ordernetworkservices \
+        -getMTU -setMTU -listvalidMTUrange -getmedia -setmedia -listvalidmedia \
+        -createVLAN -deleteVLAN -listVLANs -listdevicesthatsupportVLAN \
+        -isBondSupported -createBond -deleteBond -addDeviceToBond \
+        -removeDeviceFromBond -listBonds -showBondStatus -listpppoeservices \
+        -showpppoestatus -createpppoeservice -deletepppoeservice \
+        -setpppoeaccountname -setpppoepassword -connectpppoeservice \
+        -disconnectpppoeservice -getcurrentlocation -listlocations -createlocation \
+        -deletelocation -switchtolocation -listalluserprofiles -listloginprofiles \
+        -enablesystemprofile -enableloginprofile -enableuserprofile \
+        -import8021xProfiles -export8021xProfiles -export8021xUserProfiles \
+        -export8021xLoginProfiles -export8021xSystemProfile \
+        -settlsidentityonsystemprofile -settlsidentityonuserprofile \
+        -deleteloginprofile -deleteuserprofile -version -help -printcommands"
+
+    if [ $prev == "-keychain" ] ; then
+        local keychains="$(security list-keychains)"
+        COMPREPLY=($(compgen -W "$keychains" -- "$cur"))
+        return
+    fi
+
+    case "$cur" in
+    -*)
+        COMPREPLY=($(compgen -W "$opts" - "$cur"))
+        return
+        ;;
+    '"'*) 
+        COMPREPLY=()
+        while read service; do
+            COMPREPLY+=("$service")
+        done < <(networksetup -listallnetworkservices | grep -v "asterisk" | tr -d '*')
+        return
+        ;;
+    esac
+}
+
+complete -o bashdefault -o default -F _networksetup networksetup

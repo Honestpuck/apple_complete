@@ -108,7 +108,7 @@ _asr() {
   fi
 
   cmd="${COMP_WORDS[1]}"
-    
+  
   case "$cmd" in
 	help) _asr_help ;;
 	version) _asr_version ;;

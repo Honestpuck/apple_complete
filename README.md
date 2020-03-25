@@ -54,3 +54,12 @@ It will complete all the options. If you enter the option `--ownership`
 it will then complete on the the three possibilities. If you enter the
 option `--keychain` then it will complete on all the keychains the 
 system knows about.
+
+#### networksetup
+
+If you enter a `-` it will complete on the options (there are a heck of 
+a lot). Most options require a service name, if you enter `"` then it
+will complete on the current service names.
+
+I will be doing a few more expansions to this but I wanted to get this
+first version out ASAP.

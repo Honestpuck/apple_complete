@@ -70,4 +70,4 @@ The Airport and wireless options want a device name ('en0', 'bridge0' etc)
 so they will complete the device names. This is handier on Macs with a 
 bunch of psuedo devices.
 
-More expansions to this may come.
+More expansions to this may come. Feedback appreciated.

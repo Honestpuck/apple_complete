@@ -61,5 +61,13 @@ If you enter a `-` it will complete on the options (there are a heck of
 a lot). Most options require a service name, if you enter `"` then it
 will complete on the current service names.
 
-I will be doing a few more expansions to this but I wanted to get this
-first version out ASAP.
+If you want to complete on a hardware port then enter `'` (that's a single
+quote) then it will complete on the hardware ports. I'm still figuring out 
+how to handle the few options that want *either* a hardware port or
+device name.
+
+The Airport and wireless options want a device name ('en0', 'bridge0' etc)
+so they will complete the device names. This is handier on Macs with a 
+bunch of psuedo devices.
+
+More expansions to this may come.

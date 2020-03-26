@@ -1,7 +1,7 @@
 # bash programmable completion for _networksetup
 # Tony Willianms (honestpuck@gmail.com)
 # v1.0 2020-03-25
-#
+# v1.1 2020-03-26 Add hardware ports and device names
 
 _networksetup() {
     local cur prev opts opts_ns
@@ -9,6 +9,7 @@ _networksetup() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
+    # all the options (gulp!)
     opts="-listnetworkserviceorder -listallnetworkservices -listallhardwareports \
         -detectnewhardware -getmacaddress -getcomputername -setcomputername \
         -getinfo -setmanual -setdhcp -setbootp -setmanualwithdhcprouter \
@@ -43,9 +44,15 @@ _networksetup() {
         -settlsidentityonsystemprofile -settlsidentityonuserprofile \
         -deleteloginprofile -deleteuserprofile -version -help -printcommands"
 
-    if [ $prev == "-keychain" ] ; then
-        local keychains="$(security list-keychains)"
-        COMPREPLY=($(compgen -W "$keychains" -- "$cur"))
+    # options that want a device name after the option
+    dev_opts="getairportnetwork setairportnetwork getairportpower setairportpower \
+        listpreferredwirelessnetworks addpreferredwirelessnetworkatindex \
+        removepreferredwirelessnetwork removeallpreferredwirelessnetworks"
+
+    # handle the device name
+    if [[ $(echo $dev_opts | grep -c "${prev:1}" ) -eq 1 ]] ; then
+        dev_names=$(networksetup -listallhardwareports  | grep "Device" | cut -f 2 -d ' ')
+        COMPREPLY=($(compgen -W "$dev_names" - "$cur"))
         return
     fi
 
@@ -54,11 +61,20 @@ _networksetup() {
         COMPREPLY=($(compgen -W "$opts" - "$cur"))
         return
         ;;
-    '"'*) 
+    '"'*)
+        # handle service name - that's a double quote to start
         COMPREPLY=()
         while read service; do
             COMPREPLY+=("$service")
         done < <(networksetup -listallnetworkservices | grep -v "asterisk" | tr -d '*')
+        return
+        ;;
+    \'*)
+        # handle hardware port - that's a single quote to start
+        COMPREPLY=()
+        while read port; do
+            COMPREPLY+=("$port")
+        done < <(networksetup -listallhardwareports | egrep "Hardware" | sed 's#^.*:\ ##')
         return
         ;;
     esac

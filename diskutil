@@ -188,22 +188,20 @@ _du_appleRAID() {
     return
     ;;
   esac
-  __du_comp "create mirror stripe concat delete repairMirror add remove enable update"
-
+  __du_comp "list create mirror stripe concat delete repairMirror add remove enable update"
 }
 
 _du_APFS() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   case "$cur" in
     -*)
-      __du_comp "-plist  -fileencryption -effaceable -reserve -quota -role -nomount \
+      __du_comp "-plist -fileencryption -effaceable -reserve -quota -role -nomount \
       -mountpoint"
       return
       ;;
   esac
   __du_comp "list create createContainer deleteContainer resizeContainer addVolume \
-    addVolume deleteVolume eraseVolume changeVolumeRole"
-
+    addVolume deleteVolume eraseVolume changeVolumeRole defragment"
 }
 
 _du_coreStorage() {
@@ -232,7 +230,7 @@ _diskutil() {
       rename enableJournal disableJournal moveJournal enableOwnership disableOwnership \
       verifyVolume repairVolume verifyDisk repairDisk eraseVolume eraseDisk reformat \
       eraseOptical zeroDisk randomDisk secureErase partitionDisk resizeVolume \
-      splitPartition mergePartitions APFS AppleRaid coreStorage "
+      splitPartition mergePartitions APFS appleRAID coreStorage "
     COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
     return 0
   fi
@@ -271,7 +269,8 @@ _diskutil() {
 	splitPartition) _du_splitPartition ;;
 	mergePartitions) _du_mergePartitions ;;
 	APFS) _du_APFS ;;
-	AppleRaid) _du_AppleRaid ;;
+	apfs) _du_APFS ;;
+	appleRAID) _du_appleRAID ;;
 	coreStorage) _du_coreStorage ;;
   esac
 }
